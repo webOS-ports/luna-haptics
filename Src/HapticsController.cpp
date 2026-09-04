@@ -30,7 +30,6 @@ HapticsController* HapticsController::s_instance = NULL;
 HapticsController::HapticsController()
     : m_service(NULL)
 {
-    s_instance = this;
     // Keys are strdup'ed copies of LS2 message tokens: the token string
     // belongs to its message, and an entry has to survive the message that
     // created it (it is looked up again from the cancel callback).
@@ -40,7 +39,7 @@ HapticsController::HapticsController()
 HapticsController* HapticsController::instance()
 {
     if (!s_instance)
-        new NyxHapticsController();
+        s_instance = new NyxHapticsController();
 
     return s_instance;
 }
