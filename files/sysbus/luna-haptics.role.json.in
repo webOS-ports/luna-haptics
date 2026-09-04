@@ -1,0 +1,13 @@
+{
+    "exeName":"@WEBOS_INSTALL_SBINDIR@/LunaHaptics",
+    "trustLevel": "oem",
+    "type": "privileged",
+    "allowedNames": ["com.palm.vibrate"],
+    "permissions": [
+        {
+            "service":"com.palm.vibrate",
+            "inbound":["*"],
+            "outbound":["*"]
+        }
+    ]
+}

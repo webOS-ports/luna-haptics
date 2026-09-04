@@ -1,0 +1,13 @@
+[Unit]
+Description=LuneOS haptics (vibration) service
+Requires=ls-hubd.service
+After=ls-hubd.service nyx.target
+BindsTo=nyx.target
+
+[Service]
+Type=simple
+Restart=on-failure
+ExecStart=/usr/sbin/LunaHaptics
+
+[Install]
+WantedBy=multi-user.target

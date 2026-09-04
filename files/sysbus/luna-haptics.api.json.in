@@ -1,0 +1,10 @@
+{
+    "vibrate.operation": [
+        "com.palm.vibrate/vibrate",
+        "com.palm.vibrate/vibrateNamedEffect"
+    ],
+    "luna-sysmgr.operation": [
+        "com.palm.vibrate/vibrate",
+        "com.palm.vibrate/vibrateNamedEffect"
+    ]
+}

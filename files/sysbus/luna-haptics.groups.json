@@ -1,0 +1,5 @@
+{
+ "allowedNames": ["com.palm.vibrate"],
+ "vibrate.operation": ["dev"],
+ "luna-sysmgr.operation": ["dev"]
+}
