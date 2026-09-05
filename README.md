@@ -1,6 +1,10 @@
 luna-haptics
 ============
 
+Summary
+-------
+The LuneOS vibration service, serving com.palm.vibrate over nyx
+
 The LuneOS vibration service, serving `com.palm.vibrate` over nyx
 (`NYX_DEVICE_HAPTICS`).
 
