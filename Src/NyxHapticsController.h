@@ -29,7 +29,7 @@
  * luna-sysmgr - named for the Pre it was written on, but nothing in it is
  * device-specific; nyx is the portability layer.
  */
-class NyxHapticsController : public HapticsController
+class NyxHapticsController final : public HapticsController
 {
 public:
     NyxHapticsController();
@@ -41,6 +41,9 @@ public:
     void cancelAll() override;
 
 private:
+    //! Starts configuration; its effect id, or -1 (and nothing playing).
+    int play(const nyx_haptics_configuration_t &configuration);
+
     nyx_device_handle_t m_device;
 };
 

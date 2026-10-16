@@ -16,7 +16,7 @@
 #
 # LICENSE@@@
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
 project(luna-haptics CXX)
 
@@ -47,9 +47,15 @@ webos_add_linker_options(ALL --no-undefined)
 
 include_directories(Src)
 
-add_executable(LunaHaptics
+# Everything but main(), so tests/ can build the same code against
+# stand-ins for the bus and nyx.
+add_library(haptics-core OBJECT
     Src/HapticsController.cpp
     Src/NyxHapticsController.cpp
+    Src/Daemon.cpp)
+
+add_executable(LunaHaptics
+    $<TARGET_OBJECTS:haptics-core>
     Src/Main.cpp)
 
 target_link_libraries(LunaHaptics
@@ -60,4 +66,9 @@ target_link_libraries(LunaHaptics
     pthread)
 
 webos_build_daemon(NAME LunaHaptics)
+
+option(BUILD_TESTING "Build the unit tests in tests/" OFF)
+if (BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
 webos_build_system_bus_files()

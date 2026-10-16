@@ -16,35 +16,9 @@
 *
 * LICENSE@@@ */
 
-#include <glib.h>
-#include <glib-unix.h>
+#include "Daemon.h"
 
-#include "HapticsController.h"
-
-static gboolean onTermination(gpointer user_data)
+int main()
 {
-    g_main_loop_quit(static_cast<GMainLoop*>(user_data));
-    return G_SOURCE_REMOVE;
-}
-
-int main(int argc, char** argv)
-{
-    GMainLoop* mainLoop = g_main_loop_new(NULL, FALSE);
-
-    g_unix_signal_add(SIGTERM, onTermination, mainLoop);
-    g_unix_signal_add(SIGINT, onTermination, mainLoop);
-
-    if (!HapticsController::instance()->startService(mainLoop)) {
-        g_critical("Failed to start the haptics service; com.palm.vibrate will not answer");
-        g_main_loop_unref(mainLoop);
-        return 1;
-    }
-
-    g_main_loop_run(mainLoop);
-
-    // Do not leave an infinite vibration running behind us.
-    HapticsController::instance()->cancelAll();
-
-    g_main_loop_unref(mainLoop);
-    return 0;
+    return runHaptics();
 }

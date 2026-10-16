@@ -42,8 +42,32 @@ NyxHapticsController::~NyxHapticsController()
     if (!m_device)
         return;
 
+    // Do not leave an infinite vibration running behind us: closing the
+    // device does not stop the motor on every module (the timedoutput one's
+    // leds-class path leaves it on).
+    cancelAll();
+
     if (nyx_device_close(m_device) != NYX_ERROR_NONE)
         g_critical("NyxHapticsController failed to close the haptics device");
+}
+
+int NyxHapticsController::play(const nyx_haptics_configuration_t &configuration)
+{
+    if (nyx_haptics_vibrate(m_device, configuration) != NYX_ERROR_NONE) {
+        g_critical("Failed on nyx_haptics_vibrate!");
+        return -1;
+    }
+
+    int32_t id;
+    if (nyx_haptics_get_effect_id(m_device, &id) != NYX_ERROR_NONE || id < 0) {
+        // Playing, but with nothing a caller could cancel it by: stop it
+        // rather than report a failure while it runs.
+        g_critical("Failed to obtain haptics effect id!");
+        nyx_haptics_cancel(m_device, 0);
+        return -1;
+    }
+
+    return id;
 }
 
 int NyxHapticsController::cancel(int id)
@@ -61,7 +85,7 @@ int NyxHapticsController::cancel(int id)
 
 int NyxHapticsController::vibrate(const char *name)
 {
-    if (!m_device)
+    if (!m_device || !name)
         return -1;
 
     nyx_haptics_configuration_t configuration;
@@ -81,18 +105,7 @@ int NyxHapticsController::vibrate(const char *name)
         return -1;
     }
 
-    if (nyx_haptics_vibrate(m_device, configuration) != NYX_ERROR_NONE) {
-        g_critical("Failed on nyx_haptics_vibrate!");
-        return -1;
-    }
-
-    int id;
-    if (nyx_haptics_get_effect_id(m_device, &id) != NYX_ERROR_NONE) {
-        g_critical("Failed to obtain haptics effect id!");
-        return -1;
-    }
-
-    return id;
+    return play(configuration);
 }
 
 int NyxHapticsController::vibrate(int period, int duration)
@@ -109,18 +122,7 @@ int NyxHapticsController::vibrate(int period, int duration)
     configuration.period = period;
     configuration.duration = duration;
 
-    if (nyx_haptics_vibrate(m_device, configuration) != NYX_ERROR_NONE) {
-        g_critical("Failed on nyx_haptics_vibrate!");
-        return -1;
-    }
-
-    int id;
-    if (nyx_haptics_get_effect_id(m_device, &id) != NYX_ERROR_NONE) {
-        g_critical("Failed to obtain haptics effect id!");
-        return -1;
-    }
-
-    return id;
+    return play(configuration);
 }
 
 void NyxHapticsController::cancelAll()
