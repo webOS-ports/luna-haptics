@@ -66,4 +66,9 @@ target_link_libraries(LunaHaptics
     pthread)
 
 webos_build_daemon(NAME LunaHaptics)
+
+option(BUILD_TESTING "Build the unit tests in tests/" OFF)
+if (BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
 webos_build_system_bus_files()

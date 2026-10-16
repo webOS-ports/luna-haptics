@@ -39,7 +39,8 @@ Build
 -----
 
 Standard webOS CMake component; depends on glib-2.0, luna-service2, json-c
-and nyx.
+and nyx. `-DBUILD_TESTING=ON` adds the unit tests; `tests/README.md` has those
+and the hardening scripts.
 
 # Copyright and License Information
 
