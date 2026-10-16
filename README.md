@@ -11,12 +11,22 @@ The LuneOS vibration service, serving `com.palm.vibrate` over nyx
 API
 ---
 
-* `com.palm.vibrate/vibrate` — `{"period": ms, "duration": ms}`; omit
-  `duration` (or pass 0) to vibrate until the call is cancelled with
-  `LSCallCancel`.
+* `com.palm.vibrate/vibrate` — `{"period": ms, "duration": ms}`, both
+  numbers of 0 or more; omit `duration` (or pass 0) to vibrate until the call
+  is cancelled with `LSCallCancel` or the caller goes away.
 * `com.palm.vibrate/vibrateNamedEffect` — `{"name": "ringtone" | "alert" |
-  "notification" | "tapdown" | "tapup", "continous": bool}`; a continous
-  effect is cancelled with `LSCallCancel`.
+  "notification" | "tapdown" | "tapup", "continous": bool}` (the protocol's
+  spelling); a continous effect is cancelled with `LSCallCancel` or by the
+  caller going away.
+
+Anything else - a negative or non-numeric period or duration, a name that is
+not a string, a `continous` that is not a boolean - is refused with
+`"Invalid arguments"`, before nyx sees it.
+
+The nyx modules play one effect at a time, and cancel whatever is playing.
+So when an infinite vibration's caller goes away, the effect is cancelled
+only if no later infinite vibration or continous effect is still running for
+another caller; otherwise that one would stop too.
 
 History
 -------
