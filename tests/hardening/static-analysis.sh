@@ -90,9 +90,10 @@ if have gcc; then
 	for opt in -O0 -O2; do
 		echo "== gcc -fanalyzer $opt"
 		for f in $SOURCES; do
-			eval "gcc -x c++ -c -o /dev/null $opt -fanalyzer -Wanalyzer-too-complex \
+			# $opt after the build's flags, or their own -O level wins.
+			eval "gcc -x c++ -c -o /dev/null -fanalyzer -Wanalyzer-too-complex \
 				--param=analyzer-bb-explosion-factor=50 --param=analyzer-max-enodes-per-program-point=64 \
-				$(flags "$f") $SRC/$f" 2>&1
+				$(flags "$f") $opt $SRC/$f" 2>&1
 		done | grep -E "^$SRC/Src/[^:]+:[0-9]+:[0-9]+: warning: .*\[-Wanalyzer" \
 			| sed -E 's/terminating analysis for this program point:.*\[-Wanalyzer-too-complex\]/terminating analysis (too complex) [-Wanalyzer-too-complex]/' \
 			| sort -u | record "gcc-fanalyzer$opt"
